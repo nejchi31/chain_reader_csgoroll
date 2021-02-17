@@ -2,6 +2,7 @@ import random
 import numpy as np
 import csv
 import math
+from collections import Counter
 
 #settings
 dataLenght = 1000000000 # define your data lenght in batches 
@@ -27,7 +28,7 @@ counts = np.bincount(array_raw)
 print("Most common crash value is: " + str(np.argmax(counts)))
 
 
-def filter_stats( batch_list, n, m ):
+def filter_stats( batch_list, n, m ): #batch_list is array of data, n is lower limit, m is higher limit.
     count = 1
     for batch in batch_list:
         array_length = len(batch)
@@ -49,7 +50,7 @@ def filter_stats( batch_list, n, m ):
         count += 1
     return True
 
-def simulator (data_list, a, b, c, d, e, startingBalance, underDoubleTimes): # put value a to e in order: from smallest to biggest
+def simulator (data_list, a, b, c, d, e, startingBalance, underDoubleTimes): # put value a to e in order: from smallest to biggest, underDoubleTimes is how many games crashed under 2 consecutive
     balanceD = startingBalance
     balanceE = startingBalance
     balanceB = startingBalance
@@ -59,7 +60,7 @@ def simulator (data_list, a, b, c, d, e, startingBalance, underDoubleTimes): # p
     for data in data_list:
         result = float(data)
         if underDoubleTimes == 0 or underDoubleTimes == allowToBet :
-            print("Condition is met, " + str(underDoubleTimes) + " under 2. The crash result would be: " + str(result)) # print drawing number
+            #print("Condition is met, " + str(underDoubleTimes) + " under 2. The crash result would be: " + str(result)) # print drawing number
             allowToBet = 0 #reseting
             if result >= a:
                 balanceD += a - 1
@@ -106,14 +107,23 @@ def simulator (data_list, a, b, c, d, e, startingBalance, underDoubleTimes): # p
     print("balance with multiplier set on " + str(e) + " is " + str(round(balanceE,2)) + ". TOTAL OUTCOME: " + str(round(balanceE - startingBalance,2)) + ' coins')
     print("**************************** END ******************************")
     return True  
-    
-filter_stats(batch, 1, 2)
+
+def most_frequent_values (data_freq, top): ## data_freq is dataset, top is most frequents: 5 => top 5
+    data_freq = Counter(data_freq) 
+    res = data_freq.most_common()
+    for i in range(0, top):
+        print (str(1 + i) + ". most common crashed value is: " + str(res[i][0]) + " it was crashed: " + str(res[i][1]) + " times.") 
+
+
+#filter_stats(batch, 1, 2)
 #filter_stats(batch, 2, 3)
 #filter_stats(batch, 3, 4)
 #filter_stats(batch, 4, 5)
-filter_stats(batch, 10, 1000)
-filter_stats(batch, 1000, 100000)
-#simulator (array_raw, 2, 3, 4, 5, 10, 100, 0)
-simulator (array_raw, 2, 3, 4, 5, 10, 100, 19)
-#simulator (array_raw, 1.17, 1.30, 1.70, 1.90, 500, 100)
-#simulator (array_raw, 1.01, 1000, 10000, 100000, 1000000, 100)
+#filter_stats(batch, 10, 100)
+#filter_stats(batch, 100, 1000)
+#filter_stats(batch, 1000, 10000000)
+#simulator (array_raw, 2, 5, 35, 100, 100000, 100, 9)
+#simulator (array_raw, 2, 3, 4, 5, 10, 100, 19)
+#simulator (array_raw, 1.17, 1.30, 1.70, 1.05, 500, 100, 2)
+#simulator (array_raw, 1.01, 1000, 10000, 100000, 1000000, 100, 0)
+#most_frequent_values(array_raw, 20) 
